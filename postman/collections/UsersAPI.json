@@ -256,6 +256,45 @@
 				}
 			],
 			"id": "885cf0fc-3d2d-4d31-a6db-e36419d78026"
+		},
+		{
+			"name": "Register user",
+			"item": [
+				{
+					"name": "New Request",
+					"id": "5d10f7b1-6f3a-48fa-8f0f-7d8304b153a9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://reqres.in/api/register",
+							"protocol": "https",
+							"host": [
+								"reqres",
+								"in"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "ef50ffa7-8a08-45e2-8b24-851b2c65d953"
 		}
 	]
 }
