@@ -46,5 +46,5 @@ jobs:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
           for script in k6-test/*-script.js; do
-            k6 cloud --vus 2 --duration 30s "$script"
+            k6 cloud --vus 5 --duration 30s "$script"
           done
