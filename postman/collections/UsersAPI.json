@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "66174440-3192-4877-a1dd-aee188072757",
+		"_postman_id": "5f543b4c-7d1c-4281-8a3f-f20bd404d839",
 		"name": "UsersAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "21518977-66174440-3192-4877-a1dd-aee188072757"
+		"_uid": "21518977-5f543b4c-7d1c-4281-8a3f-f20bd404d839"
 	},
 	"item": [
 		{
@@ -15,7 +15,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a9e949db-2726-4b6d-9890-2ca220f2d912",
+								"id": "1dbe8079-cf07-432f-9fd4-409248a93c7d",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
@@ -27,7 +27,7 @@
 							}
 						}
 					],
-					"id": "ed7bc305-7df8-4723-a597-9c9e4d55b487",
+					"id": "6b9a8ac6-f267-4364-a8c4-65f4a726feac",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -61,7 +61,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2ed9580d-d10c-4810-b5bb-2ef062176987",
+								"id": "24580453-bfc4-4537-aca1-7e4026d2b3c8",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
@@ -73,7 +73,7 @@
 							}
 						}
 					],
-					"id": "a78ca6dd-3bb8-4697-8c9d-69c543400a05",
+					"id": "ba61a432-82d1-4078-9318-ef5355f9f2a6",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -97,7 +97,7 @@
 					"response": []
 				}
 			],
-			"id": "dd419821-fff5-4a72-b1fb-7b94deca59fb"
+			"id": "730098c8-91b2-462c-934e-bfe9195c069d"
 		},
 		{
 			"name": "Create User",
@@ -108,7 +108,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f83e29d7-264e-4afb-8916-775b54cab392",
+								"id": "943ac938-3a38-4686-afa9-5f010ba00892",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 201\", function () {\r",
@@ -120,7 +120,7 @@
 							}
 						}
 					],
-					"id": "2b42c4d7-1e9e-4efd-b758-b5edb29233d8",
+					"id": "36913e16-ec27-4882-a951-e994c7890bf8",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -152,7 +152,7 @@
 					"response": []
 				}
 			],
-			"id": "dedc389e-7f63-4b7d-9bc5-98fbfe904f58"
+			"id": "f126e3eb-c4e0-4a92-a993-9675cd52ac7f"
 		},
 		{
 			"name": "Update Users",
@@ -163,7 +163,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "82a26344-d5c3-44fe-9691-6c8f6d0185c6",
+								"id": "0c6ae6e5-675a-463c-b206-4a73aea9a6f5",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
@@ -175,7 +175,7 @@
 							}
 						}
 					],
-					"id": "5f3cc60c-3fb7-44ab-84db-7f7400b66043",
+					"id": "71300878-1e58-4d9d-a277-9a5386876dd1",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -208,7 +208,7 @@
 					"response": []
 				}
 			],
-			"id": "8bbea2fc-21ad-4cd7-820b-0e9bfd1c777f"
+			"id": "10429d22-79b2-4aa9-9c1f-47412c3a9afb"
 		},
 		{
 			"name": "Delete User",
@@ -219,7 +219,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "0ffc533f-bc37-4718-b07d-c505a2542de5",
+								"id": "4c220e53-4bda-4d1c-ba22-b87537b86dad",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 204\", function () {\r",
@@ -231,7 +231,7 @@
 							}
 						}
 					],
-					"id": "d746c982-9877-44f6-8714-1eff40fe0af6",
+					"id": "f487b122-84df-469a-b5fb-409c34ba8bf0",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -255,14 +255,30 @@
 					"response": []
 				}
 			],
-			"id": "885cf0fc-3d2d-4d31-a6db-e36419d78026"
+			"id": "dce6d156-777b-41c6-bec2-92a84d81aad2"
 		},
 		{
 			"name": "Register user",
 			"item": [
 				{
 					"name": "New Request",
-					"id": "5d10f7b1-6f3a-48fa-8f0f-7d8304b153a9",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "30332280-24f5-495d-8ba8-e1aa78fc636d",
+								"exec": [
+									"// Check if the response status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"id": "7dbfab69-a864-465c-8931-c4231bb15482",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -294,7 +310,7 @@
 					"response": []
 				}
 			],
-			"id": "ef50ffa7-8a08-45e2-8b24-851b2c65d953"
+			"id": "519e2876-8908-449d-9087-d95ceac8e333"
 		}
 	]
 }

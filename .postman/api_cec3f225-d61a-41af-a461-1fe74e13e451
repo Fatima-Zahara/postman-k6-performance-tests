@@ -8,8 +8,8 @@ id = cec3f225-d61a-41af-a461-1fe74e13e451
 [config.relations]
 
 [config.relations.collections]
-rootDirectory = postman/collections
-files[] = {"id":"21518977-66174440-3192-4877-a1dd-aee188072757","path":"UsersAPI.json","metaData":{}}
+rootDirectory = postman
+files[] = {"id":"21518977-5f543b4c-7d1c-4281-8a3f-f20bd404d839","path":"collections/UsersAPI.json","metaData":{}}
 
 [config.relations.collections.metaData]
 
