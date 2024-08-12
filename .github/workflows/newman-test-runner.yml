@@ -1,0 +1,46 @@
+name: Newman Test Runner
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-newman-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' 
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Create Newman report directory
+        run: mkdir -p newman
+
+      - name: Run API tests with Newman
+        run: |
+          newman run "${{ github.workspace }}/postman/collections/UsersAPI.json" \
+            --reporters cli,html,json \
+            --reporter-html-export "${{ github.workspace }}/newman/report.html" \
+            --reporter-json-export "${{ github.workspace }}/newman/report.json"
+
+      - name: Upload HTML Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-html-report
+          path: ${{ github.workspace }}/newman/report.html
+
+      - name: Upload JSON Report as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: newman-json-report
+          path: ${{ github.workspace }}/newman/report.json
