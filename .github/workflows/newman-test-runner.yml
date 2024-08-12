@@ -13,15 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' 
+          node-version: '20'
 
-      - name: Install Newman
-        run: npm install -g newman
+      - name: Install Newman and htmlextra reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
       - name: Create Newman report directory
         run: mkdir -p newman
@@ -29,18 +31,15 @@ jobs:
       - name: Run API tests with Newman
         run: |
           newman run "${{ github.workspace }}/postman/collections/UsersAPI.json" \
-            --reporters cli,html,json \
-            --reporter-html-export "${{ github.workspace }}/newman/report.html" \
+            --reporters cli,htmlextra,json \
+            --reporter-htmlextra-export "${{ github.workspace }}/newman/report.html" \
             --reporter-json-export "${{ github.workspace }}/newman/report.json"
 
-      - name: Upload HTML Report as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: newman-html-report
-          path: ${{ github.workspace }}/newman/report.html
+      - name: List files for debugging
+        run: ls -R ${{ github.workspace }}/newman
 
-      - name: Upload JSON Report as Artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload Reports as Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: newman-json-report
-          path: ${{ github.workspace }}/newman/report.json
+          name: newman-reports
+          path: ${{ github.workspace }}/newman/
