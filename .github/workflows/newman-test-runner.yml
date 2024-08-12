@@ -18,7 +18,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  
+          node-version: '20'
 
       - name: Install Newman and htmlextra reporter
         run: |
@@ -28,15 +28,21 @@ jobs:
       - name: Create Newman report directory
         run: mkdir -p newman
 
+      - name: List files in postman/collections
+        run: ls -la "${{ github.workspace }}/postman/collections"
+
       - name: Run API tests with Newman
         run: |
-          newman run "${{ github.workspace }}/postman/collections/UsersAPI.json" \
-            --reporters cli,htmlextra,json \
-            --reporter-htmlextra-export "${{ github.workspace }}/newman/report.html" \
-            --reporter-json-export "${{ github.workspace }}/newman/report.json"
-
-      - name: List files for debugging
-        run: ls -R ${{ github.workspace }}/newman
+          if [ "$(ls -A "${{ github.workspace }}/postman/collections")" ]; then
+            for file in "${{ github.workspace }}/postman/collections/*.json"; do
+              newman run "$file" \
+                --reporters cli,htmlextra,json \
+                --reporter-htmlextra-export "${{ github.workspace }}/newman/report-$(basename "$file" .json).html" \
+                --reporter-json-export "${{ github.workspace }}/newman/report-$(basename "$file" .json).json"
+            done
+          else
+            echo "No collection files found in ${GITHUB_WORKSPACE}/postman/collections"
+          fi
 
       - name: Upload Reports as Artifacts
         uses: actions/upload-artifact@v4
