@@ -1,4 +1,4 @@
-name: k6 Tests Workflow
+name: k6 Load Tests
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   load-test:
@@ -27,37 +28,28 @@ jobs:
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Convert Postman collections to k6 scripts
+      - name: Create k6 test directory
+        run: mkdir -p "${{ github.workspace }}/k6-test"
+
+      - name: Convert Postman collections and environment to k6 scripts
         run: |
-          mkdir -p k6-test
-          for file in postman/collections/*.json; do
-            filename=$(basename "$file" .json)
-            env_file="postman/environments/${filename}_environment.json"
-            if [ -f "$env_file" ]; then
-              postman-to-k6 "$file" -e "$env_file" -o "k6-test/${filename}-script.js"
+          for file in "${{ github.workspace }}/postman/collections/"*.json; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file" .json)
+              postman-to-k6 --collection "$file" --env "${{ github.workspace }}/postman/environments/env.json" -o "${{ github.workspace }}/k6-test/${filename}-script.js"
             else
-              postman-to-k6 "$file" -o "k6-test/${filename}-script.js"
+              echo "No JSON files found in ${GITHUB_WORKSPACE}/postman/collections"
             fi
           done
 
-      - name: Extract Environment Variables
-        id: extract_env
+      - name: Run k6 load tests
         run: |
-          ENV_FILE=$(find postman/environments -name '*_environment.json' | head -n 1)
-          if [ -z "$ENV_FILE" ]; then
-            echo "No environment JSON file found."
-            exit 1
-          fi
-          echo "Using environment file: $ENV_FILE"
-          jq -r '.values[] | "\(.key)=\(.value)"' "$ENV_FILE" > env.list
-          echo "ENV_VARS<<EOF" >> $GITHUB_ENV
-          cat env.list >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
-      - name: Run k6 tests
-        run: |
-          for script in k6-test/*-script.js; do
-            k6 run --vus 5 --duration 30s "$script"
+          for script in "${{ github.workspace }}/k6-test/"*-script.js; do
+            if [ -f "$script" ]; then
+              k6 run --vus 5 --duration 30s "$script"
+            else
+              echo "No k6 scripts found in ${GITHUB_WORKSPACE}/k6-test"
+            fi
           done
-        env:
-          $(jq -r '.values[] | "\(.key)=\(.value)"' "$ENV_FILE" | xargs)
+
+     

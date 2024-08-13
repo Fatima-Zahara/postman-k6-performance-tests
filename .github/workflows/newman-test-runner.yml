@@ -28,15 +28,6 @@ jobs:
       - name: Create Newman report directory
         run: mkdir -p "${{ github.workspace }}/newman"
 
-      - name: List repository contents
-        run: ls -la "${{ github.workspace }}"
-
-      - name: List files in postman/collections
-        run: ls -la "${{ github.workspace }}/postman/collections"
-
-      - name: List files in postman/environments
-        run: ls -la "${{ github.workspace }}/postman/environments"
-
       - name: Run API tests with Newman
         run: |
           echo "Looking for files in ${GITHUB_WORKSPACE}/postman/collections"
@@ -60,8 +51,14 @@ jobs:
             fi
           done
 
+      - name: Create artifacts folder
+        run: mkdir -p "${{ github.workspace }}/artifacts"
+
+      - name: Move reports to artifacts folder
+        run: mv "${{ github.workspace }}/newman/*" "${{ github.workspace }}/artifacts/"
+
       - name: Upload Reports as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: newman-reports
-          path: "${{ github.workspace }}/newman/"
+          path: "${{ github.workspace }}/artifacts/"
