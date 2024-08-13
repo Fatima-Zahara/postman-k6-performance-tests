@@ -36,7 +36,8 @@ jobs:
           for file in "${{ github.workspace }}/postman/collections/"*.json; do
             if [ -f "$file" ]; then
               filename=$(basename "$file" .json)
-              postman-to-k6 --collection "$file" --env "${{ github.workspace }}/postman/environments/env.json" -o "${{ github.workspace }}/k6-test/${filename}-script.js"
+              echo "Converting $file to k6 script"
+              postman-to-k6 convert "$file" --env "${{ github.workspace }}/postman/environments/env.json" -o "${{ github.workspace }}/k6-test/${filename}-script.js"
             else
               echo "No JSON files found in ${GITHUB_WORKSPACE}/postman/collections"
             fi
@@ -46,10 +47,9 @@ jobs:
         run: |
           for script in "${{ github.workspace }}/k6-test/"*-script.js; do
             if [ -f "$script" ]; then
+              echo "Running k6 test with $script"
               k6 run --vus 5 --duration 30s "$script"
             else
               echo "No k6 scripts found in ${GITHUB_WORKSPACE}/k6-test"
             fi
           done
-
-     

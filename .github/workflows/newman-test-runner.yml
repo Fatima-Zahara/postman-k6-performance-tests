@@ -31,34 +31,35 @@ jobs:
       - name: Run API tests with Newman
         run: |
           echo "Looking for files in ${GITHUB_WORKSPACE}/postman/collections"
-          for file in "${GITHUB_WORKSPACE}/postman/collections/"*.json; do
-            if [ -f "$file" ]; then
-              echo "Running tests for $file"
-              # Find environment files
-              for env_file in "${GITHUB_WORKSPACE}/postman/environments/"*.json; do
-                if [ -f "$env_file" ]; then
-                  newman run "$file" \
-                    --environment "$env_file" \
-                    --reporters cli,htmlextra,json \
-                    --reporter-htmlextra-export "${{ github.workspace }}/newman/report-$(basename "$file" .json).html" \
-                    --reporter-json-export "${{ github.workspace }}/newman/report-$(basename "$file" .json).json"
-                else
-                  echo "No environment files found in ${GITHUB_WORKSPACE}/postman/environments"
-                fi
-              done
+          echo "Looking for environment files in ${GITHUB_WORKSPACE}/postman/environments"
+          for collection_file in "${GITHUB_WORKSPACE}/postman/collections/"*.json; do
+            if [ -f "$collection_file" ]; then
+              collection_name=$(basename "$collection_file" .json)
+              echo "Running tests for $collection_file"
+              
+              # Find corresponding environment file
+              environment_file="${GITHUB_WORKSPACE}/postman/environments/${collection_name}.json"
+              if [ -f "$environment_file" ]; then
+                echo "Using environment file $environment_file"
+                newman run "$collection_file" \
+                  --environment "$environment_file" \
+                  --reporters cli,htmlextra,json \
+                  --reporter-htmlextra-export "${{ github.workspace }}/newman/report-${collection_name}.html" \
+                  --reporter-json-export "${{ github.workspace }}/newman/report-${collection_name}.json"
+              else
+                echo "No environment file found for $collection_file"
+                newman run "$collection_file" \
+                  --reporters cli,htmlextra,json \
+                  --reporter-htmlextra-export "${{ github.workspace }}/newman/report-${collection_name}.html" \
+                  --reporter-json-export "${{ github.workspace }}/newman/report-${collection_name}.json"
+              fi
             else
               echo "No JSON files found in ${GITHUB_WORKSPACE}/postman/collections"
             fi
           done
 
-      - name: Create artifacts folder
-        run: mkdir -p "${{ github.workspace }}/artifacts"
-
-      - name: Move reports to artifacts folder
-        run: mv "${{ github.workspace }}/newman/*" "${{ github.workspace }}/artifacts/"
-
       - name: Upload Reports as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: newman-reports
-          path: "${{ github.workspace }}/artifacts/"
+          path: "${{ github.workspace }}/newman/"
