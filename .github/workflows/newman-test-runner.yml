@@ -28,6 +28,9 @@ jobs:
       - name: Create Newman report directory
         run: mkdir -p "${{ github.workspace }}/newman"
 
+      - name: List repository contents
+        run: ls -la "${{ github.workspace }}"
+
       - name: List files in postman/collections
         run: ls -la "${{ github.workspace }}/postman/collections"
 

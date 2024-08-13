@@ -33,7 +33,7 @@ jobs:
           echo "COLLECTION_FILE=$COLLECTION_FILE" >> $GITHUB_ENV
 
           # Find the first Postman environment file
-          for file in $GITHUB_WORKSPACE/postman/environment/*.json; do
+          for file in $GITHUB_WORKSPACE/postman/environments/*.json; do
             ENV_FILE="$file"
             break
           done
