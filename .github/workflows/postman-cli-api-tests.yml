@@ -7,11 +7,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: List available collections
+        id: list-collections
+        run: |
+          COLLECTIONS_DIR="${{ github.workspace }}/postman/collections"
+          echo "Collections directory: $COLLECTIONS_DIR"
+          # Find the first collection file (adjust if necessary)
+          COLLECTION_FILE=$(find $COLLECTIONS_DIR -type f -name "*.json" | head -n 1)
+          echo "COLLECTION_FILE=$COLLECTION_FILE" >> $GITHUB_ENV
+
+      - name: List available environments
+        id: list-environments
+        run: |
+          ENVIRONMENTS_DIR="${{ github.workspace }}/postman/environments"
+          echo "Environments directory: $ENVIRONMENTS_DIR"
+          # Find the first environment file (adjust if necessary)
+          ENVIRONMENT_FILE=$(find $ENVIRONMENTS_DIR -type f -name "*.json" | head -n 1)
+          echo "ENVIRONMENT_FILE=$ENVIRONMENT_FILE" >> $GITHUB_ENV
+
       - name: Run API tests
         run: |
-          postman collection run "${{ github.workspace }}/postman/collections/UsersAPI.json" -e "37647624-c0d8b51d-ed2b-43e6-9821-af0d2fe840e0"
+          postman collection run "$COLLECTION_FILE" -e "$ENVIRONMENT_FILE"

@@ -39,6 +39,9 @@ jobs:
             else
               postman-to-k6 "$collection" -o "k6-test/${filename}-script.js"
             fi
+            # Debug output of the generated k6 script
+            echo "Generated k6 script for $collection:"
+            cat "k6-test/${filename}-script.js"
           done
 
       - name: Log in to k6 Cloud
@@ -51,5 +54,6 @@ jobs:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
           for script in k6-test/*-script.js; do
+            echo "Running k6 test script: $script"
             k6 cloud --vus 5 --duration 30s "$script"
           done
