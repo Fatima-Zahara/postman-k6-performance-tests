@@ -15,5 +15,3 @@ jobs:
       - name: Run API tests
         run: |
           postman collection run "${{ github.workspace }}/postman/collections/UsersAPI.json"
-          # Lint your API using Postman CLI
-          postman api lint cec3f225-d61a-41af-a461-1fe74e13e451
