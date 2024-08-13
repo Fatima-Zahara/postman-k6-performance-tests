@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   load-test:
@@ -33,27 +32,32 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
-            postman-to-k6 "$file" -o "k6-test/${filename}-script.js"
+            env_file="postman/collections/${filename}_environment.json"
+            if [ -f "$env_file" ]; then
+              postman-to-k6 "$file" -e "$env_file" -o "k6-test/${filename}-script.js"
+            else
+              postman-to-k6 "$file" -o "k6-test/${filename}-script.js"
+            fi
           done
 
-      - name: Find and extract environment variables from JSON file
+      - name: Extract Environment Variables
         id: extract_env
         run: |
-          # Find the environment JSON file
           ENV_FILE=$(find postman/collections -name '*_environment.json' | head -n 1)
           if [ -z "$ENV_FILE" ]; then
             echo "No environment JSON file found."
             exit 1
           fi
           echo "Using environment file: $ENV_FILE"
-          # Extract variables from the JSON file
-          jq -r '.values[] | "\(.key)=\(.value)"' "$ENV_FILE" > .env
+          jq -r '.values[] | "\(.key)=\(.value)"' "$ENV_FILE" > env.list
+          echo "ENV_VARS<<EOF" >> $GITHUB_ENV
+          cat env.list >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
-      - name: Load environment variables
-        env:
-          # Load environment variables from the .env file
-          $(cat .env | xargs)
+      - name: Run k6 tests
         run: |
           for script in k6-test/*-script.js; do
             k6 run --vus 5 --duration 30s "$script"
           done
+        env:
+          $(cat env.list | xargs)

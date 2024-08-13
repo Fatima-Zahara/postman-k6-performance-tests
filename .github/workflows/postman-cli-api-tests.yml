@@ -7,11 +7,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Find Postman Collection and Environment
+        id: find-files
+        run: |
+          echo "Searching for Postman collection and environment files..."
+
+          # Find the first Postman collection file
+          for file in $GITHUB_WORKSPACE/postman/collections/*.json; do
+            COLLECTION_FILE="$file"
+            break
+          done
+          if [ -z "$COLLECTION_FILE" ]; then
+            echo "No collection file found"
+            exit 1
+          fi
+          echo "Collection file found: $COLLECTION_FILE"
+          echo "COLLECTION_FILE=$COLLECTION_FILE" >> $GITHUB_ENV
+
+          # Find the first Postman environment file
+          for file in $GITHUB_WORKSPACE/postman/environment/*.json; do
+            ENV_FILE="$file"
+            break
+          done
+          if [ -z "$ENV_FILE" ]; then
+            echo "No environment file found"
+            exit 1
+          fi
+          echo "Environment file found: $ENV_FILE"
+          echo "ENV_FILE=$ENV_FILE" >> $GITHUB_ENV
+
       - name: Run API tests
         run: |
-          postman collection run "${{ github.workspace }}/postman/collections/UsersAPI.json"
+          echo "Running API tests with collection: ${{ env.COLLECTION_FILE }} and environment: ${{ env.ENV_FILE }}"
+          postman collection run "${{ env.COLLECTION_FILE }}" --environment "${{ env.ENV_FILE }}"
