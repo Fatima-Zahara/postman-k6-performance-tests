@@ -32,7 +32,7 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
-            env_file="postman/collections/${filename}_environment.json"
+            env_file="postman/environments/${filename}_environment.json"
             if [ -f "$env_file" ]; then
               postman-to-k6 "$file" -e "$env_file" -o "k6-test/${filename}-script.js"
             else
@@ -43,7 +43,7 @@ jobs:
       - name: Extract Environment Variables
         id: extract_env
         run: |
-          ENV_FILE=$(find postman/collections -name '*_environment.json' | head -n 1)
+          ENV_FILE=$(find postman/environments -name '*_environment.json' | head -n 1)
           if [ -z "$ENV_FILE" ]; then
             echo "No environment JSON file found."
             exit 1
@@ -60,4 +60,4 @@ jobs:
             k6 run --vus 5 --duration 30s "$script"
           done
         env:
-          $(cat env.list | xargs)
+          $(jq -r '.values[] | "\(.key)=\(.value)"' "$ENV_FILE" | xargs)
