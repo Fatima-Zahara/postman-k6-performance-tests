@@ -7,11 +7,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Install Postman CLI
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
       - name: Login to Postman CLI
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
       - name: Run API tests
         run: |
-          postman collection run "${{ github.workspace }}/postman/collections/UsersAPI.json" -e "37647624-c0d8b51d-ed2b-43e6-9821-af0d2fe840e0"
+          for collection in ${{ github.workspace }}/postman/collections/*.json; do
+            for env in ${{ github.workspace }}/postman/environments/*.json; do
+              postman collection run "$collection" --environment "$env"
+            done
+          done
+          
+      - name: Lint your API
+        run: postman api lint 2569c8fb-e3ef-4131-b87e-f63dcb8732e0

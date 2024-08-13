@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   load-test:
@@ -44,12 +43,12 @@ jobs:
       - name: Log in to k6 Cloud
         env:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
-        run: k6 login cloud --token "${K6_API_TOKEN}"
+        run: k6 login cloud --token "${{ secrets.K6_API_TOKEN }}"
 
       - name: Run k6 load tests on k6 Cloud
         env:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
           for script in k6-test/*-script.js; do
-            k6 cloud --vus 5 --duration 30s --env k6-env/env.json "$script"
+            k6 cloud run "$script" --vus 5 --duration 30s --env-file k6-env/env.json
           done
