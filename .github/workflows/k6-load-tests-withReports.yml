@@ -42,6 +42,13 @@ jobs:
       - name: List files in k6-test directory
         run: ls -R k6-test
 
+      - name: Verify core.js file path
+        run: |
+          if [ ! -f k6-test/libs/shim/core.js ]; then
+            echo "Error: k6-test/libs/shim/core.js file not found!"
+            exit 1
+          fi
+
       - name: Combine k6 scripts with template
         run: |
           for script in k6-test/*-script.js; do
