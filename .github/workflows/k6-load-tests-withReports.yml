@@ -1,4 +1,4 @@
-name: k6 Load Tests with reports
+name: k6 Load Tests
 
 on:
   push:
@@ -57,12 +57,6 @@ jobs:
         run: |
           mkdir -p k6-reports
           for result in k6-results/*.json; do
-            report_file="k6-reports/$(basename "$result" .json).html"
-            k6-html-reporter "$result" -o "$report_file"
+            output_html="k6-reports/$(basename "$result" .json).html"
+            k6-html-reporter "$result" -o "$output_html"
           done
-
-      - name: Upload HTML reports as artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: k6-html-reports
-          path: k6-reports
