@@ -3,8 +3,8 @@ const path = require('path');
 
 // Paths to your files
 const templatePath = path.resolve(__dirname, 'k6-script-template.js');
-const postmanScriptPath = path.resolve(__dirname, 'k6-test/k6-script.js'); // Adjusted path
-const outputPath = path.resolve(__dirname, 'k6-test/combined-k6-script.js'); // Adjusted path
+const postmanScriptPath = path.resolve(__dirname, 'k6-test/k6-script.js'); 
+const outputPath = path.resolve(__dirname, 'k6-test/combined-k6-script.js'); 
 
 // Check if files exist
 if (!fs.existsSync(templatePath)) {

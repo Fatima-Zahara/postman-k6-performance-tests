@@ -1,4 +1,4 @@
-name: k6 Load Tests
+name: k6 Load Tests with reports
 
 on:
   push:
@@ -40,6 +40,10 @@ jobs:
             done
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
+
+      - name: List directory contents
+        run: |
+          ls -R
 
       - name: Combine k6 script with template
         run: |
