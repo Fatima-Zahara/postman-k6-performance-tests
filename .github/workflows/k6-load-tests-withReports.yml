@@ -1,4 +1,4 @@
-name: k6 Load Tests with HTML Reports
+name: k6 Load Tests with reports
 
 on:
   push:
@@ -21,8 +21,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install postman-to-k6
-        run: npm install -g postman-to-k6
+      - name: Install dependencies
+        run: |
+          npm install -g postman-to-k6 k6-html-reporter
 
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
@@ -32,6 +33,7 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
+            # Include environment files in the conversion if they exist
             env_files=""
             for env_file in postman/environments/*.json; do
               env_files+=" -e $env_file"
@@ -39,25 +41,28 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: List files in k6-test directory
-        run: ls -R k6-test
-
-      - name: Verify core.js file path
+      - name: Combine k6 script with template
         run: |
-          if [ ! -f k6-test/libs/shim/core.js ]; then
-            echo "Error: k6-test/libs/shim/core.js file not found!"
-            exit 1
-          fi
+          node combine-scripts.js
 
-      - name: Combine k6 scripts with template
+      - name: Run k6 load tests and generate JSON results
         run: |
+          mkdir -p k6-results
           for script in k6-test/*-script.js; do
-            cat k6-script-template.js "$script" > combined-k6-script.js
-            k6 run --vus 5 --duration 30s combined-k6-script.js
+            output_file="k6-results/$(basename "$script" -script.js).json"
+            k6 run --vus 5 --duration 30s "$script" --out json="$output_file"
+          done
+
+      - name: Generate HTML reports
+        run: |
+          mkdir -p k6-reports
+          for result in k6-results/*.json; do
+            report_file="k6-reports/$(basename "$result" .json).html"
+            k6-html-reporter "$result" -o "$report_file"
           done
 
       - name: Upload HTML reports as artifacts
         uses: actions/upload-artifact@v3
         with:
           name: k6-html-reports
-          path: summary.html
+          path: k6-reports
