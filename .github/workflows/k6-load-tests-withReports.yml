@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-      
+
 jobs:
   load-test:
     runs-on: ubuntu-latest
@@ -38,15 +38,6 @@ jobs:
             done
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
-
-      - name: Create k6 script template
-        run: |
-          echo "import { check, sleep } from 'k6';" > k6-script-template.js
-          echo "import { htmlReport } from 'k6-reporter';" >> k6-script-template.js
-          echo "" >> k6-script-template.js
-          echo "export function handleSummary(data) {" >> k6-script-template.js
-          echo "  return { 'summary.html': htmlReport(data) };" >> k6-script-template.js
-          echo "}" >> k6-script-template.js
 
       - name: Combine k6 scripts with template
         run: |
