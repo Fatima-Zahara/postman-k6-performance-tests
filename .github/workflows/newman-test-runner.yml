@@ -30,15 +30,26 @@ jobs:
 
       - name: Run API tests with Newman
         run: |
-          echo "Running tests with Newman"
-          collection_id="37647624-eaaa4e31-0144-4fa4-9e86-d5d9e005997d"
-          environment_id="37647624-c0d8b51d-ed2b-43e6-9821-af0d2fe840e0"
-          
-          newman run $collection_id \
-            --environment $environment_id \
-            --reporters cli,htmlextra,json \
-            --reporter-htmlextra-export "${{ github.workspace }}/newman/report-$(basename "$collection_id").html" \
-            --reporter-json-export "${{ github.workspace }}/newman/report-$(basename "$collection_id").json"
+          echo "Looking for collections in ${GITHUB_WORKSPACE}/postman/collections"
+          for collection in "${GITHUB_WORKSPACE}/postman/collections/"*.json; do
+            if [ -f "$collection" ]; then
+              echo "Found collection $collection"
+              for env in "${GITHUB_WORKSPACE}/postman/environments/"*.json; do
+                if [ -f "$env" ]; then
+                  echo "Running tests for $collection with environment $env"
+                  newman run "$collection" \
+                    --environment "$env" \
+                    --reporters cli,htmlextra,json \
+                    --reporter-htmlextra-export "${{ github.workspace }}/newman/report-$(basename "$collection" .json)-$(basename "$env" .json).html" \
+                    --reporter-json-export "${{ github.workspace }}/newman/report-$(basename "$collection" .json)-$(basename "$env" .json).json"
+                else
+                  echo "No environment files found in ${GITHUB_WORKSPACE}/postman/environments"
+                fi
+              done
+            else
+              echo "No JSON files found in ${GITHUB_WORKSPACE}/postman/collections"
+            fi
+          done
 
       - name: Upload Reports as Artifacts
         uses: actions/upload-artifact@v4
