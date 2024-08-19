@@ -39,16 +39,20 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Combine k6 scripts with template
-        run: node k6-test/combine-scripts.js
+      - name: Combine k6 scripts
+        run: |
+          node k6-test/combine-script.js
+        env:
+          NODE_ENV: development
 
       - name: Run combined k6 load test and generate HTML report
         run: |
-          k6 run --vus 2 --duration 1m k6-test/combined-k6-script.js --out json=k6-test/report.json
-          k6 report k6-test/report.json --out k6-test/report.html
+          k6 run --vus 2 --duration 1m k6-test/combined-k6-script.js
+        env:
+          K6_OUTPUT: html=k6-test/summary.html
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v3
         with:
-          name: k6-report
-          path: k6-test/report.html
+          name: k6-summary-report
+          path: k6-test/summary.html

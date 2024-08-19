@@ -3,7 +3,7 @@ const path = require('path');
 
 // Paths to your files
 const templatePath = path.resolve(__dirname, 'k6-script-template.js');
-const postmanScriptPath = path.resolve(__dirname, 'k6-script.js');
+const postmanScriptPath = path.resolve(__dirname, 'k6-script.js'); 
 const outputPath = path.resolve(__dirname, 'combined-k6-script.js');
 
 // Read the contents of the template and the generated script
