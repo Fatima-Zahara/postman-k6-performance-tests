@@ -3,19 +3,8 @@ const path = require('path');
 
 // Paths to your files
 const templatePath = path.resolve(__dirname, 'k6-script-template.js');
-const postmanScriptPath = path.resolve(__dirname, 'k6-test/k6-script.js'); 
-const outputPath = path.resolve(__dirname, 'k6-test/combined-k6-script.js'); 
-
-// Check if files exist
-if (!fs.existsSync(templatePath)) {
-  console.error(`Template file not found: ${templatePath}`);
-  process.exit(1);
-}
-
-if (!fs.existsSync(postmanScriptPath)) {
-  console.error(`Postman script file not found: ${postmanScriptPath}`);
-  process.exit(1);
-}
+const postmanScriptPath = path.resolve(__dirname, 'k6-script.js');
+const outputPath = path.resolve(__dirname, 'combined-k6-script.js');
 
 // Read the contents of the template and the generated script
 const template = fs.readFileSync(templatePath, 'utf8');

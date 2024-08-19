@@ -1,4 +1,4 @@
-name: k6 Load Tests with reports
+name: k6 Load Tests
 
 on:
   push:
@@ -22,8 +22,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: |
-          npm install -g postman-to-k6 k6-html-reporter
+        run: npm install -g postman-to-k6
 
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
@@ -41,26 +40,16 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: List directory contents
-        run: |
-          ls -R
+      - name: Combine k6 scripts with template
+        run: node combine-scripts.js
 
-      - name: Combine k6 script with template
+      - name: Run combined k6 load test and generate HTML report
         run: |
-          node combine-scripts.js
+          k6 run --vus 2 --duration 1m combined-k6-script.js --out json=report.json
+          k6 report report.json --out html=report.html
 
-      - name: Run k6 load tests and generate JSON results
-        run: |
-          mkdir -p k6-results
-          for script in k6-test/*-script.js; do
-            output_file="k6-results/$(basename "$script" -script.js).json"
-            k6 run --vus 5 --duration 30s "$script" --out json="$output_file"
-          done
-
-      - name: Generate HTML reports
-        run: |
-          mkdir -p k6-reports
-          for result in k6-results/*.json; do
-            output_html="k6-reports/$(basename "$result" .json).html"
-            k6-html-reporter "$result" -o "$output_html"
-          done
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6-report
+          path: report.html
