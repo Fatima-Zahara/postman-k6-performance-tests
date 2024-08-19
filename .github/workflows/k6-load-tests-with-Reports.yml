@@ -39,7 +39,7 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/k6-script.js"
           done
 
-     - name: Combine k6 scripts with the template
+      - name: Combine k6 scripts with the template
         run: |
           node k6-test/combine-scripts.js
 
