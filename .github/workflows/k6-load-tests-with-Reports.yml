@@ -30,7 +30,7 @@ jobs:
       - name: Convert Postman collections to k6 scripts
         run: |
           mkdir -p k6-test
-         for file in postman/collections/*.json; do
+          for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
             env_files=""
             for env_file in postman/environments/*.json; do
