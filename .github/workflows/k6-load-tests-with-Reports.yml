@@ -42,19 +42,9 @@ jobs:
       - name: Combine k6 scripts with the template
         run: |
           node k6-test/combine-scripts.js
-          ls -la k6-test  # Debugging: List files to verify combined script creation
 
       - name: Run k6 load test with combined script
         run: k6 run --vus 5 --duration 30s k6-test/combined-k6-script.js
-
-      - name: Verify summary.html existence
-        run: |
-          if [ -f k6-test/summary.html ]; then
-            echo "summary.html exists"
-            cat k6-test/summary.html
-          else
-            echo "summary.html does not exist"
-          fi
 
       - name: Upload k6 HTML Report
         uses: actions/upload-artifact@v3
