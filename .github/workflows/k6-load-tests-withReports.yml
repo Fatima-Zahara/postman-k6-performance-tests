@@ -24,6 +24,9 @@ jobs:
       - name: Install Postman-to-k6
         run: npm install -g postman-to-k6
 
+      - name: Install k6-summary
+        run: npm install -g k6-summary
+
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
 
@@ -53,9 +56,13 @@ jobs:
       - name: List k6-test directory contents
         run: ls -la k6-test
 
-      - name: Run combined k6 load test and generate HTML report
+      - name: Run combined k6 load test and generate JSON report
         run: |
-          k6 run --vus 2 --duration 1m k6-test/combined-k6-script.js --out html=k6-test/summary.html
+          k6 run --vus 2 --duration 1m k6-test/combined-k6-script.js --out json=k6-test/summary.json
+
+      - name: Convert JSON to HTML
+        run: |
+          k6-summary k6-test/summary.json -o k6-test/summary.html
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v3
