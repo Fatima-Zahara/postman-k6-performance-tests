@@ -53,17 +53,16 @@ jobs:
       - name: List k6-test directory contents for debugging
         run: ls -la k6-test
 
-    - name: Run combined k6 load test and generate JSON report
-  run: |
-    k6 run --vus 2 --duration 1m --summary-export=k6-test/summary.json k6-test/combined-k6-script.js
+      - name: Run combined k6 load test and generate JSON report
+        run: |
+          k6 run --vus 2 --duration 1m --summary-export=k6-test/summary.json k6-test/combined-k6-script.js
 
-- name: Generate HTML report from JSON
-  run: |
-    node -e "const { htmlReport } = require('k6-reporter'); const fs = require('fs'); const summary = JSON.parse(fs.readFileSync('k6-test/summary.json')); fs.writeFileSync('k6-test/summary.html', htmlReport(summary));"
+      - name: Generate HTML report from JSON
+        run: |
+          node -e "const { htmlReport } = require('k6-reporter'); const fs = require('fs'); const summary = JSON.parse(fs.readFileSync('k6-test/summary.json')); fs.writeFileSync('k6-test/summary.html', htmlReport(summary));"
 
-- name: Upload HTML report
-  uses: actions/upload-artifact@v3
-  with:
-    name: k6-summary-report
-    path: k6-test/summary.html
-
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6-summary-report
+          path: k6-test/summary.html
