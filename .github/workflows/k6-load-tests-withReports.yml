@@ -1,4 +1,4 @@
-name: k6 Load Tests with reports
+name: k6 Load Tests with Reports
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
+      - name: Install Postman-to-k6
         run: npm install -g postman-to-k6
 
       - name: Set up k6
@@ -29,7 +29,6 @@ jobs:
 
       - name: Convert Postman collections to k6 scripts
         run: |
-          mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
             # Include environment files in the conversion if they exist
@@ -41,15 +40,15 @@ jobs:
           done
 
       - name: Combine k6 scripts with template
-        run: node combine-scripts.js
+        run: node k6-test/combine-scripts.js
 
       - name: Run combined k6 load test and generate HTML report
         run: |
-          k6 run --vus 2 --duration 1m combined-k6-script.js --out json=report.json
-          k6 report report.json --out html=report.html
+          k6 run --vus 2 --duration 1m k6-test/combined-k6-script.js --out json=k6-test/report.json
+          k6 report k6-test/report.json --out k6-test/report.html
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v3
         with:
           name: k6-report
-          path: report.html
+          path: k6-test/report.html
