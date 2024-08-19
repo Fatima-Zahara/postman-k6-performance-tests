@@ -24,6 +24,9 @@ jobs:
       - name: Install Postman-to-k6
         run: npm install -g postman-to-k6
 
+      - name: Install k6-reporter for HTML report generation
+        run: npm install --save k6-reporter
+
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
 
@@ -59,7 +62,7 @@ jobs:
 
       - name: Generate HTML report
         run: |
-          k6 run k6-test/combined-k6-script.js --summary-export=k6-test/summary.json
+          node -e "const { htmlReport } = require('k6-reporter'); const fs = require('fs'); const report = htmlReport(JSON.parse(fs.readFileSync('k6-test/summary.json'))); fs.writeFileSync('k6-test/summary.html', report);"
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v3
