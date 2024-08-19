@@ -39,7 +39,7 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Verify k6-test directory
+      - name: Verify k6-script.js presence
         run: ls -la k6-test
 
       - name: Combine k6 scripts
