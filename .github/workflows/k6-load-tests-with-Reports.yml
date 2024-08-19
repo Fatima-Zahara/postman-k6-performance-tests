@@ -1,0 +1,53 @@
+name: k6 Load Tests with reports
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install postman-to-k6
+        run: npm install -g postman-to-k6
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Convert Postman collections to k6 scripts
+        run: |
+          mkdir -p k6-test
+         for file in postman/collections/*.json; do
+            filename=$(basename "$file" .json)
+            env_files=""
+            for env_file in postman/environments/*.json; do
+              env_files+=" -e $env_file"
+            done
+            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
+          done
+
+      - name: Combine k6 scripts with the template
+        run: |
+          node k6-test/combine-scripts.js
+
+      - name: Run k6 load test with combined script
+        run: k6 run --vus 5 --duration 30s k6-test/combined-k6-script.js
+
+      - name: Upload k6 HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: k6-html-report
+          path: k6-test/summary.html
