@@ -1,4 +1,4 @@
-name: k6 Load Tests
+name: k6 Load Tests with reports
 
 on:
   push:
@@ -27,21 +27,21 @@ jobs:
       - name: Set up k6
         uses: grafana/setup-k6-action@v1
 
-      - name: Convert Postman collections to k6 scripts
-        run: |
-          mkdir -p k6-test
-          for file in postman/collections/*.json; do
-            filename=$(basename "$file" .json)
-            # Include environment files in the conversion if they exist
-            env_files=""
-            for env_file in postman/environments/*.json; do
-              env_files+=" -e $env_file"
-            done
-            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
-          done
+   - name: Convert Postman collections to k6 scripts
+  run: |
+    mkdir -p k6-test
+    for file in postman/collections/*.json; do
+      filename=$(basename "$file" .json)
+      env_files=""
+      for env_file in postman/environments/*.json; do
+        env_files+=" -e $env_file"
+      done
+      postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
+    done
 
-      - name: Combine k6 scripts with template
-        run: node combine-scripts.js
+- name: Combine k6 scripts with template
+  run: node combine-scripts.js
+
 
       - name: Run combined k6 load test and generate HTML report
         run: |

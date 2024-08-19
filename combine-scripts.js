@@ -1,19 +1,29 @@
 const fs = require('fs');
 const path = require('path');
 
-// Paths to your files
+// Adjust the paths as needed to match where the scripts are generated
 const templatePath = path.resolve(__dirname, 'k6-script-template.js');
-const postmanScriptPath = path.resolve(__dirname, 'k6-script.js');
+const postmanScriptDir = path.resolve(__dirname, 'k6-test'); // Directory where scripts are saved
 const outputPath = path.resolve(__dirname, 'combined-k6-script.js');
 
-// Read the contents of the template and the generated script
+// Check if the directory exists and if the expected file(s) are there
+const files = fs.readdirSync(postmanScriptDir).filter(file => file.endsWith('-script.js'));
+
+if (files.length === 0) {
+  throw new Error('No k6 scripts found to combine.');
+}
+
+let combinedScript = '';
+
+files.forEach(file => {
+  const filePath = path.resolve(postmanScriptDir, file);
+  const postmanScript = fs.readFileSync(filePath, 'utf8');
+  combinedScript += `${postmanScript}\n\n`;
+});
+
 const template = fs.readFileSync(templatePath, 'utf8');
-const postmanScript = fs.readFileSync(postmanScriptPath, 'utf8');
+combinedScript += template;
 
-// Combine the scripts
-const combinedScript = `${postmanScript}\n\n${template}`;
-
-// Write the combined script to a new file
 fs.writeFileSync(outputPath, combinedScript, 'utf8');
 
 console.log(`Combined script written to ${outputPath}`);
