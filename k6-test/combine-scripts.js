@@ -4,7 +4,7 @@ const path = require('path');
 // Define paths
 const templatePath = path.join(__dirname, 'k6-script-template.js');
 const combinedScriptPath = path.join(__dirname, 'combined-k6-script.js');
-const testDir = path.join(__dirname, 'k6-test');
+const testDir = path.join(__dirname, 'k6-test');  // This should be correct
 
 // Debugging: Print paths to verify correctness
 console.log('Template Path:', templatePath);
