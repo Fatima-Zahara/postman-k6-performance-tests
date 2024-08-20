@@ -200,10 +200,10 @@
 								"id": "093c5ae3-db4e-40bc-ac76-c28aa294fc26",
 								"exec": [
 									"// Parse the response JSON\r",
-									"let responseBody = pm.response.json();\r",
+									"let updateUserResponse = pm.response.json();\r",
 									"\r",
-									"pm.environment.set(\"name\", responseBody.name);\r",
-									"pm.environment.set(\"job\", responseBody.job);\r",
+									"pm.environment.set(\"name\", updateUserResponse.name);\r",
+									"pm.environment.set(\"job\", updateUserResponse.job);\r",
 									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
