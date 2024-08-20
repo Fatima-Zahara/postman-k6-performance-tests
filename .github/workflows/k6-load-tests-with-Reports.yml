@@ -1,5 +1,4 @@
-name: k6 Load Tests with Reports
-
+name: k6 Load Tests with reports
 on:
   push:
     branches:
@@ -36,11 +35,10 @@ jobs:
             for env_file in postman/environments/*.json; do
               env_files+=" -e $env_file"
             done
+
+            # Check if postman-to-k6 supports environment files
             postman-to-k6 "$file" $env_files -o "k6-test/k6-script.js"
           done
-
-      - name: List files in k6-test directory
-        run: ls -al k6-test
 
       - name: Combine k6 scripts with the template
         run: |
