@@ -37,7 +37,7 @@ jobs:
             for env_file in postman/environments/*.json; do
               env_files+=" -e $env_file"
             done
-            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
+            postman-to-k6 "$file" $env_files -o "k6-test/k6-script.js"
           done
 
       - name: Run k6 load tests
