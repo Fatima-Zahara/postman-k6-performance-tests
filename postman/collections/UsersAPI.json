@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "4fdbd755-993e-43c9-bb32-66a4ed279d66",
+		"_postman_id": "3a72ded5-d4ce-4aad-ae19-2c84c4a5267e",
 		"name": "UsersAPI",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_uid": "37647624-4fdbd755-993e-43c9-bb32-66a4ed279d66"
+		"_uid": "37647624-3a72ded5-d4ce-4aad-ae19-2c84c4a5267e"
 	},
 	"item": [
 		{
@@ -15,24 +15,21 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "a7e4ed72-12b4-48ea-81e5-dc5724b07d9b",
+								"id": "90afe08e-1215-44ef-af52-7339084954de",
 								"exec": [
-									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"// Parse the response JSON\r",
-									"let response = pm.response.json();\r",
-									"\r",
-									"// Save the 'id' with value 7 to an environment variable\r",
-									"if (response.data) {\r",
-									"    response.data.forEach(user => {\r",
-									"        if (user.id === 7) {\r",
-									"            pm.environment.set(\"user_id\", user.id);\r",
-									"        }\r",
-									"    });\r",
-									"}\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "9ae6c0f0-c3d8-497b-abda-68a24476f2d7",
+								"exec": [
 									""
 								],
 								"type": "text/javascript",
@@ -40,7 +37,7 @@
 							}
 						}
 					],
-					"id": "7544d00e-9a59-43c9-8508-7cddbed4e4c1",
+					"id": "09f587b7-0971-4023-a460-a210f9c3a682",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -71,7 +68,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "400c00d6-e213-420a-bade-a2455b53230a",
+								"id": "eba83bea-ae7f-4ae9-8e13-fb8ac932b642",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
@@ -83,7 +80,7 @@
 							}
 						}
 					],
-					"id": "6b2020f5-3aae-416f-b2d3-2f8a41315b61",
+					"id": "fef6eff6-ccb7-49f8-94fa-543e985054e2",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -91,25 +88,20 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{App_url}}/users?id={{user_id}}",
+							"raw": "{{App_url}}/users/2",
 							"host": [
 								"{{App_url}}"
 							],
 							"path": [
-								"users"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{user_id}}"
-								}
+								"users",
+								"2"
 							]
 						}
 					},
 					"response": []
 				}
 			],
-			"id": "f1df913a-7715-4e51-8c23-d94a0eb22176"
+			"id": "f8c82a15-5d95-4228-a1bb-fe388b75b8ea"
 		},
 		{
 			"name": "Create User",
@@ -120,22 +112,15 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9f9fd932-1bab-490a-a0df-0d3e7df15b45",
+								"id": "fa5c69f3-70fe-44fd-868e-267cd336041a",
 								"exec": [
-									"// Check if the response status code is 200\r",
+									"// Parse the response JSON\r",
+									"let userResponse = pm.response.json();\r",
+									"pm.environment.set(\"id\", userResponse.id);\r",
+									"\r",
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
-									"});\r",
-									"\r",
-									"// Parse the response JSON\r",
-									"let response = pm.response.json();\r",
-									"\r",
-									"pm.environment.set(\"id\", response.id);\r",
-									"\r",
-									"\r",
-									"\r",
-									"\r",
-									""
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -144,7 +129,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "6bb6e5fb-bfbf-4e80-9b45-de2be118f608",
+								"id": "b393b90e-a837-4901-8daf-b865c2b9652e",
 								"exec": [
 									"// Function to generate a random string of a given length\r",
 									"function generateRandomString(length) {\r",
@@ -172,7 +157,7 @@
 							}
 						}
 					],
-					"id": "723cdbb9-092b-4de3-91bd-ad26527661d6",
+					"id": "4ec7c9ac-f15e-4f49-9495-1aa463cee264",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -201,7 +186,7 @@
 					"response": []
 				}
 			],
-			"id": "3010fb2d-d1a5-48a6-8e05-05a8dac874f3"
+			"id": "a5a53884-1eee-40bc-b31b-8f914d13f44a"
 		},
 		{
 			"name": "Update Users",
@@ -212,20 +197,17 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b39daa6c-e297-4586-8bc9-741551f93f57",
+								"id": "093c5ae3-db4e-40bc-ac76-c28aa294fc26",
 								"exec": [
-									"// Check if the response status code is 200\r",
+									"// Parse the response JSON\r",
+									"let responseBody = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"name\", responseBody.name);\r",
+									"pm.environment.set(\"job\", responseBody.job);\r",
+									"\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"// Parse the response JSON\r",
-									"let response = pm.response.json();\r",
-									"\r",
-									"pm.environment.set(\"name\", response.name);\r",
-									"pm.environment.set(\"job\", response.job);\r",
-									"\r",
-									""
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -234,12 +216,16 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"packages": {},
-								"type": "text/javascript"
+								"id": "5f941453-a2fe-4508-a491-49062f0241f4",
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
-					"id": "1e9798b0-3ecb-4ee5-a0f7-96dd53538fc3",
+					"id": "af32fa6e-c734-4431-9991-75c02dfb872f",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -275,7 +261,7 @@
 					"response": []
 				}
 			],
-			"id": "87543dda-b0e4-4cab-a282-0aa4a44f3cba"
+			"id": "f3031f13-43ed-40ad-a434-7e2125a45981"
 		},
 		{
 			"name": "Delete User",
@@ -286,7 +272,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "6ff5f6dc-a1bd-4b18-9b38-352057105081",
+								"id": "b18d27e0-0e8c-4d84-9047-2dd6ec4f0782",
 								"exec": [
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 204\", function () {\r",
@@ -298,7 +284,7 @@
 							}
 						}
 					],
-					"id": "99b607c2-e8ac-49d8-9625-74042ffacbf9",
+					"id": "d8411350-1f0d-411f-be5f-45e6210c7212",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -319,105 +305,7 @@
 					"response": []
 				}
 			],
-			"id": "fc423145-b0f5-4d51-b185-264b12a27a76"
-		},
-		{
-			"name": "Register user",
-			"item": [
-				{
-					"name": "Register - unsuccessful",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "6ca7de86-b90f-4cf6-9ff2-8fefb8dcad22",
-								"exec": [
-									"// Check if the response status code is 400\r",
-									"pm.test(\"Status code is 400\", function () {\r",
-									"    pm.response.to.have.status(400);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "d2ac9263-97a8-40dc-a7ed-0c6b46eacfc3",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"sydney@fife\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{App_url}}/register",
-							"host": [
-								"{{App_url}}"
-							],
-							"path": [
-								"register"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Register - successful",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "35319794-2362-42de-b4e8-589d25f1d788",
-								"exec": [
-									"// Check if the response status code is 200\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"id": "452ac360-941a-4342-ac56-64bd75e33dfe",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n    \"password\": \"pistol\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{App_url}}/register",
-							"host": [
-								"{{App_url}}"
-							],
-							"path": [
-								"register"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"id": "b45e4c1a-9c84-4c68-b20c-7849b38fe6bc"
+			"id": "86745083-0bdd-4881-93c1-92fea6f9bcaa"
 		}
 	]
 }
