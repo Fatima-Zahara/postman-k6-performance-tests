@@ -43,5 +43,5 @@ jobs:
       - name: Run k6 load tests
         run: |
           for script in k6-test/*-script.js; do
-            k6 run --vus 5 --duration 30s "$script"
+            k6 run --vus 10 --duration 30s k6-test/combined-k6-script.js
           done
