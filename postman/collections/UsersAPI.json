@@ -20,7 +20,20 @@
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"// Save the 'id' with value 7 to an environment variable\r",
+									"if (response.data) {\r",
+									"    response.data.forEach(user => {\r",
+									"        if (user.id === 7) {\r",
+									"            pm.environment.set(\"user_id\", user.id);\r",
+									"        }\r",
+									"    });\r",
+									"}\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -78,13 +91,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{App_url}}/users/2",
+							"raw": "{{App_url}}/users?id={{user_id}}",
 							"host": [
 								"{{App_url}}"
 							],
 							"path": [
-								"users",
-								"2"
+								"users"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
 							]
 						}
 					},
@@ -107,7 +125,47 @@
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 201\", function () {\r",
 									"    pm.response.to.have.status(201);\r",
-									"});"
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"id\", response.id);\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6bb6e5fb-bfbf-4e80-9b45-de2be118f608",
+								"exec": [
+									"// Function to generate a random string of a given length\r",
+									"function generateRandomString(length) {\r",
+									"    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"    let result = '';\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"// Generate random values for name and job\r",
+									"let randomName = generateRandomString(8);  // Generates an 8-character random name\r",
+									"let randomJob = generateRandomString(5);   // Generates a 5-character random job\r",
+									"\r",
+									"// Save the random name and job to environment variables\r",
+									"pm.environment.set(\"random_name\", randomName);\r",
+									"pm.environment.set(\"random_job\", randomJob);\r",
+									"\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -123,7 +181,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"morpheus\",\r\n    \"job\": \"leader\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -159,10 +217,25 @@
 									"// Check if the response status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});"
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"pm.environment.set(\"name\", response.name);\r",
+									"pm.environment.set(\"job\", response.job);\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -183,13 +256,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{App_url}}/users/2",
+							"raw": "{{App_url}}/users/2?id={{id}}",
 							"host": [
 								"{{App_url}}"
 							],
 							"path": [
 								"users",
 								"2"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{id}}"
+								}
 							]
 						}
 					},
@@ -227,13 +306,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{App_url}}/users/2",
+							"raw": "{{App_url}}/users/{{id}}",
 							"host": [
 								"{{App_url}}"
 							],
 							"path": [
 								"users",
-								"2"
+								"{{id}}"
 							]
 						}
 					},
