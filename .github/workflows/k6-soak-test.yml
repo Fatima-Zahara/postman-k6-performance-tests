@@ -1,0 +1,48 @@
+name: k6 Soak Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  soak-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install postman-to-k6
+        run: npm install -g postman-to-k6
+
+      - name: Set up k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Convert Postman collections to k6 scripts
+        run: |
+          mkdir -p k6-test
+          for file in postman/collections/*.json; do
+            filename=$(basename "$file" .json)
+            # Include environment files in the conversion if they exist
+            env_files=""
+            for env_file in postman/environments/*.json; do
+              env_files+=" -e $env_file"
+            done
+            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
+          done
+
+      - name: Run k6 soak tests
+        run: |
+          for script in k6-test/*-script.js; do
+            echo "Running $script"
+            k6 run --vus 100 --duration 6h "$script"
+          done
