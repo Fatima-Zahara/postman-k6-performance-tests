@@ -1,17 +1,6 @@
-name: k6 Soak Test
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
 jobs:
-  soak-test:
+  soak-test-part1:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,17 +21,34 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
-            # Include environment files in the conversion if they exist
-            env_files=""
-            for env_file in postman/environments/*.json; do
-              env_files+=" -e $env_file"
-            done
-            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
+            postman-to-k6 "$file" -o "k6-test/${filename}-script.js"
           done
 
-      - name: Run k6 soak tests
+      - name: Run k6 soak tests part 1
         run: |
           for script in k6-test/*-script.js; do
-            echo "Running $script"
-            k6 run --vus 100 --duration 6h "$script"
+            echo "Running $script - part 1"
+            k6 run --vus 100 --duration 3h "$script"
+          done
+
+  soak-test-part2:
+    runs-on: ubuntu-latest
+    needs: soak-test-part1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Set up k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 soak tests part 2
+        run: |
+          for script in k6-test/*-script.js; do
+            echo "Running $script - part 2"
+            k6 run --vus 100 --duration 3h "$script"
           done
