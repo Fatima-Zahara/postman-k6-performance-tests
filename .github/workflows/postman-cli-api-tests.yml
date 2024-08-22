@@ -15,3 +15,4 @@ jobs:
       - name: Run API tests
         run: |
           postman collection run "${{ github.workspace }}/postman/collections/UsersAPI.json" -e "37647624-c0d8b51d-ed2b-43e6-9821-af0d2fe840e0"
+          
