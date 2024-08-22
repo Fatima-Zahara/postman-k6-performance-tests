@@ -40,43 +40,9 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Upload k6 scripts
-        uses: actions/upload-artifact@v3
-        with:
-          name: k6-scripts
-          path: k6-test/
-
-      - name: Run k6 soak tests part 1
+      - name: Run k6 soak test
         run: |
           for script in k6-test/*-script.js; do
-            echo "Running $script - part 1"
-            k6 run --vus 100 --duration 1m "$script"
-          done
-
-  soak-test-part2:
-    runs-on: ubuntu-latest
-    needs: soak-test-part1
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Set up k6
-        uses: grafana/setup-k6-action@v1
-
-      - name: Download k6 scripts
-        uses: actions/download-artifact@v3
-        with:
-          name: k6-scripts
-
-      - name: Run k6 soak tests part 2
-        run: |
-          for script in k6-test/*-script.js; do
-            echo "Running $script - part 2"
-            k6 run --vus 100 --duration 1m "$script"
+            echo "Running $script"
+            k6 run --vus 10 --duration 5h "$script"
           done
