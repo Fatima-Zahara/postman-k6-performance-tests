@@ -1,4 +1,4 @@
-name: k6 Load Tests with Reports on k6 Cloud
+name: k6 Load Tests and view reports on k6
 
 on:
   push:
@@ -32,6 +32,7 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
+            # Include environment files in the conversion if they exist
             env_files=""
             for env_file in postman/environments/*.json; do
               env_files+=" -e $env_file"
@@ -39,22 +40,16 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: List k6-test directory
-        run: ls -la k6-test
-
-      - name: Check if K6_API_TOKEN is set
-        run: |
-          if [ -z "$K6_API_TOKEN" ]; then
-            echo "K6_API_TOKEN is not set"
-            exit 1
-          else
-            echo "K6_API_TOKEN is set"
-          fi
-
       - name: Run k6 load tests
-        env:
-          K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
           for script in k6-test/*-script.js; do
-            k6 run --vus 5 --duration 30s --out cloud="$K6_API_TOKEN" "$script"
+            echo "Running $script"
+            k6 run --vus 5 --duration 30s "$script"
+          done
+
+      - name: Upload test results to k6 Cloud
+        run: |
+          for script in k6-test/*-script.js; do
+            echo "Uploading $script results to k6 Cloud"
+            k6 cloud --vus 5 --duration 30s "$script" --api-token ${{ secrets.K6_API_TOKEN }}
           done
