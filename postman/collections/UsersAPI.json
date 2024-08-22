@@ -254,13 +254,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{App_url}}/users/2?id={{id}}",
+							"raw": "{{App_url}}/users/?id={{id}}",
 							"host": [
 								"{{App_url}}"
 							],
 							"path": [
 								"users",
-								"2"
+								""
 							],
 							"query": [
 								{
