@@ -32,7 +32,12 @@ jobs:
           mkdir -p k6-test
           for file in postman/collections/*.json; do
             filename=$(basename "$file" .json)
-            postman-to-k6 "$file" -o "k6-test/${filename}-script.js"
+            env_files=""
+            # Include environment files in the conversion if they exist
+            for env_file in postman/environments/*.json; do
+              env_files+=" -e $env_file"
+            done
+            postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
       - name: Run k6 soak tests part 1
