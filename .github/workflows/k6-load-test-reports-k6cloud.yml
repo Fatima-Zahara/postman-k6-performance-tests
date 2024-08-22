@@ -1,4 +1,4 @@
-name: k6 Load Tests with reports on k6 cloud
+name: k6 Load Tests with Reports on k6 Cloud
 
 on:
   push:
@@ -46,7 +46,6 @@ jobs:
         env:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
-          echo "K6 API Token: $K6_API_TOKEN"
           for script in k6-test/*-script.js; do
             echo "Running $script"
             k6 run --vus 5 --duration 30s --out cloud="$K6_API_TOKEN" "$script"
