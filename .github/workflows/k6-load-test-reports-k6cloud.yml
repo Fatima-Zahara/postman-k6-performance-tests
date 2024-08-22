@@ -1,3 +1,13 @@
+name: k6 Load Tests with Reports on k6 Cloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   load-test:
     runs-on: ubuntu-latest
@@ -32,17 +42,19 @@ jobs:
       - name: List k6-test directory
         run: ls -la k6-test
 
-      - name: Print environment variables
-        run: printenv
-
-      - name: Check K6_API_TOKEN
-        run: echo $K6_API_TOKEN
+      - name: Check if K6_API_TOKEN is set
+        run: |
+          if [ -z "$K6_API_TOKEN" ]; then
+            echo "K6_API_TOKEN is not set"
+            exit 1
+          else
+            echo "K6_API_TOKEN is set"
+          fi
 
       - name: Run k6 load tests
         env:
           K6_API_TOKEN: ${{ secrets.K6_API_TOKEN }}
         run: |
           for script in k6-test/*-script.js; do
-            echo "Running $script"
             k6 run --vus 5 --duration 30s --out cloud="$K6_API_TOKEN" "$script"
           done
