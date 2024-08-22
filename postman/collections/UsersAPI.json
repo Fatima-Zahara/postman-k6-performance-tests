@@ -142,14 +142,12 @@
 									"}\r",
 									"\r",
 									"// Generate random values for name and job\r",
-									"let randomName = generateRandomString(8);  // Generates an 8-character random name\r",
-									"let randomJob = generateRandomString(5);   // Generates a 5-character random job\r",
+									"let randomName = generateRandomString(8);  \r",
+									"let randomJob = generateRandomString(5);   \r",
 									"\r",
 									"// Save the random name and job to environment variables\r",
-									"pm.environment.set(\"random_name\", randomName);\r",
-									"pm.environment.set(\"random_job\", randomJob);\r",
-									"\r",
-									"\r",
+									"pm.environment.set(\"randomName\", randomName);\r",
+									"pm.environment.set(\"randomJob\", randomJob);\r",
 									""
 								],
 								"type": "text/javascript",
@@ -166,7 +164,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"name\": \"{{randomName}}\",\r\n    \"job\": \"{{randomJob}}\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -218,6 +216,20 @@
 							"script": {
 								"id": "5f941453-a2fe-4508-a491-49062f0241f4",
 								"exec": [
+									"// Function to generate a random string of a given length\r",
+									"function generateRandomString(length) {\r",
+									"    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';\r",
+									"    let result = '';\r",
+									"    for (let i = 0; i < length; i++) {\r",
+									"        result += characters.charAt(Math.floor(Math.random() * characters.length));\r",
+									"    }\r",
+									"    return result;\r",
+									"}\r",
+									"\r",
+									"// Generate random values for name and job\r",
+									"let randomName = generateRandomString(8);  \r",
+									"let randomJob = generateRandomString(5);  \r",
+									"\r",
 									""
 								],
 								"type": "text/javascript",
@@ -234,7 +246,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"morpheus\",\r\n    \"job\": \"zion resident\"\r\n}",
+							"raw": "{\r\n    \"name\": \"{{randomName}}\",\r\n    \"job\": \"{{randomJob}}\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
