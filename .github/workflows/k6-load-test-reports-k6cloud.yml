@@ -1,13 +1,3 @@
-name: k6 Load Tests with Reports on k6 Cloud
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
 jobs:
   load-test:
     runs-on: ubuntu-latest
@@ -41,6 +31,12 @@ jobs:
 
       - name: List k6-test directory
         run: ls -la k6-test
+
+      - name: Print environment variables
+        run: printenv
+
+      - name: Check K6_API_TOKEN
+        run: echo $K6_API_TOKEN
 
       - name: Run k6 load tests
         env:
