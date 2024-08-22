@@ -1,4 +1,4 @@
-name: k6 Load Tests and view reports on k6
+name: k6 Load Tests and view metrics on k6 Cloud
 
 on:
   push:
@@ -40,16 +40,16 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Run k6 load tests
+      - name: Run k6 load tests locally
         run: |
           for script in k6-test/*-script.js; do
             echo "Running $script"
-            k6 run --vus 5 --duration 30s "$script"
+            k6 run --vus 5 --duration 30s "$script" --summary-export=summary.json
           done
 
       - name: Upload test results to k6 Cloud
         run: |
           for script in k6-test/*-script.js; do
             echo "Uploading $script results to k6 Cloud"
-            k6 cloud --vus 5 --duration 30s "$script" --api-token ${{ secrets.K6_API_TOKEN }}
+            k6 cloud run --vus 5 --duration 30s "$script" --token ${{ secrets.K6_API_TOKEN }}
           done
