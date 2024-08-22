@@ -9,8 +9,12 @@ on:
       - main
 
 jobs:
-  soak-test-part1:
+  soak-test:
     runs-on: ubuntu-latest
+
+    env:
+      K6_VUS: 10
+      K6_DURATION: 5h
 
     steps:
       - name: Checkout repository
@@ -44,5 +48,17 @@ jobs:
         run: |
           for script in k6-test/*-script.js; do
             echo "Running $script"
-            k6 run --vus 10 --duration 5h "$script"
+            k6 run --vus $K6_VUS --duration $K6_DURATION "$script"
           done
+
+      - name: Run k6 load tests and upload results to Grafana Cloud
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: |
+            k6-test/*-script.js
+          cloud-run-locally: true
+          cloud-comment-on-pr: true
+          flags: --vus $K6_VUS --duration $K6_DURATION

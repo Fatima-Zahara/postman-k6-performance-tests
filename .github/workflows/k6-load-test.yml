@@ -40,9 +40,14 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Run k6 load tests
-        run: |
-          for script in k6-test/*-script.js; do
-            echo "Running $script"
-            k6 run --vus 5 --duration 30s "$script"
-          done
+      - name: Run k6 load tests and upload results to Grafana Cloud
+        uses: grafana/run-k6-action@v1
+        env:
+          K6_CLOUD_TOKEN: ${{ secrets.K6_CLOUD_TOKEN }}
+          K6_CLOUD_PROJECT_ID: ${{ secrets.K6_CLOUD_PROJECT_ID }}
+        with:
+          path: |
+            k6-test/*-script.js
+          cloud-run-locally: true
+          cloud-comment-on-pr: true 
+          flags: --vus 5 --duration 30s  
