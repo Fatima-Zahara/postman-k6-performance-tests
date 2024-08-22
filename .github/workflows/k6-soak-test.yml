@@ -1,6 +1,17 @@
+name: k6 Soak Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   soak-test-part1:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,6 +45,7 @@ jobs:
   soak-test-part2:
     runs-on: ubuntu-latest
     needs: soak-test-part1
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
