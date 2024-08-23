@@ -12,10 +12,6 @@ jobs:
   soak-test:
     runs-on: ubuntu-latest
 
-    env:
-      K6_VUS: 10
-      K6_DURATION: 5h
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -44,13 +40,6 @@ jobs:
             postman-to-k6 "$file" $env_files -o "k6-test/${filename}-script.js"
           done
 
-      - name: Run k6 soak test
-        run: |
-          for script in k6-test/*-script.js; do
-            echo "Running $script"
-            k6 run --vus $K6_VUS --duration $K6_DURATION "$script"
-          done
-
       - name: Run k6 load tests and upload results to Grafana Cloud
         uses: grafana/run-k6-action@v1
         env:
@@ -61,4 +50,4 @@ jobs:
             k6-test/*-script.js
           cloud-run-locally: true
           cloud-comment-on-pr: true
-          flags: --vus $K6_VUS --duration $K6_DURATION
+          flags: --vus 100 --duration 1h
