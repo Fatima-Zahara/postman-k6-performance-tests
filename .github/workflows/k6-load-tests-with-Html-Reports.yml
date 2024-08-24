@@ -1,4 +1,4 @@
-name: k6 Load Tests with reports
+name: k6 Load Tests with Html Reports
 on:
   push:
     branches:
